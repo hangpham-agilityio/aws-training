@@ -1,4 +1,3 @@
-
 **DESCRIPTION**
 
 - This is a simple demo project using AWS Services serverless
@@ -19,3 +18,7 @@
 - API Gateway
 - Lambda function
 - CloudFomation
+
+**DIAGRAM ARCHITECTURE**
+
+![diagram image](images/diagram.png)

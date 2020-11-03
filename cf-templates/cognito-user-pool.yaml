@@ -37,7 +37,7 @@ Resources:
       UserPoolId: !Ref UserPool
       AllowedOAuthFlowsUserPoolClient: true
       CallbackURLs:
-        - http://localhost:3000
+        - http://example.com/
       AllowedOAuthFlows:
         - code
         - implicit
@@ -62,5 +62,5 @@ Outputs:
     Value: !Ref UserPoolClient
     Description: The app client
   HostedUIURL:
-    Value: !Sub https://${CognitoDomain}.auth.us-west-2.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=token&scope=email+openid+phone+profile&redirect_uri=http://localhost:3000
+    Value: !Sub https://${CognitoDomain}.auth.us-west-2.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=token&scope=email+openid+profile&redirect_uri=http://example.com/
     Description: The hosted UI URL

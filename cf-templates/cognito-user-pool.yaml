@@ -7,6 +7,8 @@ Parameters:
     MaxLength: 63
     AllowedPattern: ^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$
     Description: Enter a Cognito domain name. Must be alpha numeric 3-63 in length.
+  CallbackURL:
+    Type: String
 
 Resources:
   # Creates a user pool in cognito for your app to auth against
@@ -37,7 +39,7 @@ Resources:
       UserPoolId: !Ref UserPool
       AllowedOAuthFlowsUserPoolClient: true
       CallbackURLs:
-        - http://example.com/
+        - !Ref CallbackURL
       AllowedOAuthFlows:
         - code
         - implicit
@@ -62,5 +64,5 @@ Outputs:
     Value: !Ref UserPoolClient
     Description: The app client
   HostedUIURL:
-    Value: !Sub https://${CognitoDomain}.auth.us-west-2.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=token&scope=email+openid+profile&redirect_uri=http://example.com/
+    Value: !Sub https://${CognitoDomain}.auth.us-west-2.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=token&scope=email+openid+profile&redirect_uri=${CallbackURL}
     Description: The hosted UI URL

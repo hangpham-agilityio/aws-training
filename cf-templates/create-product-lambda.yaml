@@ -41,6 +41,7 @@ Resources:
                 - lambda.amazonaws.com
 
   # Define create product lambda function
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-package.html (Using the package command to upload local artifacts to S3 bucket)
   CreateProductItemFunction:
     Type: AWS::Lambda::Function
     Properties:

@@ -84,8 +84,8 @@ Resources:
     Type: AWS::ApiGateway::Method
     DependsOn: ApiGatewayIamRole
     Properties:
-      ApiKeyRequired: false
-      AuthorizationType: NONE
+      ApiKeyRequired: true
+      AuthorizationType: COGNITO_USER_POOLS
       HttpMethod: POST
       Integration:
         ConnectionType: INTERNET
@@ -98,6 +98,7 @@ Resources:
       OperationName: 'products'
       ResourceId: !Ref ApiGatewayResource
       RestApiId: !Ref ApiGatewayRestApi
+      AuthorizerId: !Ref Authorizer
 
   ApiGatewayModel:
     Type: AWS::ApiGateway::Model
@@ -143,3 +144,12 @@ Resources:
               - Effect: 'Allow'
                 Action: 'lambda:*'
                 Resource: !GetAtt CreateProductItemFunction.Arn
+  Authorizer:
+    Type: 'AWS::ApiGateway::Authorizer'
+    Properties:
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Authorization
+      Name: ProductAuthorizer
+      RestApiId: !Ref ApiGatewayRestApi
+      ProviderARNs:
+        - arn:aws:cognito-idp:us-west-2:376387039631:userpool/us-west-2_6jim9d0eQ

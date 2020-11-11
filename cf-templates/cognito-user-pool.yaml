@@ -219,16 +219,6 @@ Resources:
                 MatchType: 'Equals'
                 RoleARN: !GetAtt CognitoAdminGroupRole.Arn
                 Value: 'Admin'
-        ProductDeliveryUserPool2:
-          IdentityProvider: !Ref UserPool
-          AmbiguousRoleResolution: Deny
-          Type: Rules
-          RulesConfiguration:
-            Rules:
-              - Claim: 'groups'
-                MatchType: 'Equals'
-                RoleARN: !GetAtt CognitoCustomerGroupRole.Arn
-                Value: 'Customer'
 
 Outputs:
   CognitoUserPoolID:

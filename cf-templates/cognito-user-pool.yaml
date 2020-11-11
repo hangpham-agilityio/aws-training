@@ -206,19 +206,23 @@ Resources:
     Properties:
       IdentityPoolId: !Ref CognitoIdentityPool
       Roles:
-        authenticated: !GetAtt CognitoAuthenticateRole.Arn
-        unauthenticated: !GetAtt CognitoUnauthenticateRole.Arn
+        "authenticated": !GetAtt CognitoAuthenticateRole.Arn
+        "unauthenticated": !GetAtt CognitoUnauthenticateRole.Arn
       RoleMappings:
-        ProductDeliveryUserPool1:
-          IdentityProvider: !Ref UserPool
-          AmbiguousRoleResolution: Deny
+        "cognito-identity.amazonaws.com":
+          IdentityProvider: !Sub cognito-idp.us-west-2.amazonaws.com/${UserPool}:${UserPoolClient}
+          AmbiguousRoleResolution: AuthenticatedRole
           Type: Rules
           RulesConfiguration:
             Rules:
-              - Claim: 'groups'
-                MatchType: 'Equals'
+              - Claim: groups
+                MatchType: Contains
                 RoleARN: !GetAtt CognitoAdminGroupRole.Arn
-                Value: 'Admin'
+                Value: Admin
+              - Claim: groups
+                MatchType: Contains
+                RoleARN: !GetAtt CognitoCustomerGroupRole.Arn
+                Value: Customer
 
 Outputs:
   CognitoUserPoolID:

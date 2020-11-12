@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template for Lambda Function add order item to DynamoDB table.
+Resources:
+  # Define lambda execution role
+  OrderLambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Policies:
+        - PolicyName: LambdaPolicyProduct
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource:
+                  - 'arn:aws:logs:*:*:*'
+                Effect: Allow
+              - Action:
+                - 'dynamodb:PutItem'
+                - 'dynamodb:BatchGetItem'
+                - 'dynamodb:GetItem'
+                - 'dynamodb:Query'
+                - 'dynamodb:Scan'
+                - 'dynamodb:BatchWriteItem'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:UpdateItem'
+                Resource:
+                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order'
+                Effect: Allow
+
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+
+  # Define create order lambda function
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-package.html (Using the package command to upload local artifacts to S3 bucket)
+  # In origin template define attribute Code: local path of function (/Users/hangpham/aws-training/function_name.py)
+  CreateOrderItemFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: create-order
+      Description: Lambda Function to create order item to DynamoDB
+      Runtime: python3.8
+      Code:
+        S3Bucket: pd-lambda-functions
+        S3Key: fa6e10ab74a966e3c5ee52924dbd1401
+      Handler: create-order.lambda_handler
+      MemorySize: 128
+      Timeout: 10
+      Role:
+        !GetAtt OrderLambdaExecutionRole.Arn

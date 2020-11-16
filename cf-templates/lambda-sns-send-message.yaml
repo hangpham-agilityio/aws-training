@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template for Lambda Function publish message to SNS.
+Resources:
+  # Define lambda execution role
+  PublishLambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Policies:
+        - PolicyName: LambdaPolicyPublishMessage
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - lambda:InvokeFunction
+                Resource:
+                  - arn:aws:lambda:us-west-2:376387039631:function:publishNewOrder*
+              - Action:
+                - 'logs:CreateLogGroup'
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+                Resource:
+                  - 'arn:aws:logs:*:*:*'
+                Effect: Allow
+              - Action:
+                - 'dynamodb:DescribeStream',
+                - 'dynamodb:GetRecords',
+                - 'dynamodb:GetShardIterator',
+                - 'dynamodb:ListStream'
+                Resource:
+                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/*'
+                Effect: Allow
+              - Action:
+                - 'sns:Publish'
+                Resource:
+                  - '*'
+                Effect:
+                  - Allow
+
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+
+  # Define publish message lambda function
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-package.html (Using the package command to upload local artifacts to S3 bucket)
+  # In origin template define attribute Code: local path of function (/Users/hangpham/aws-training/function_name.py)
+  CreateOrderItemFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: publish-message
+      Description: Lambda Function to publish message to SNS topic
+      Runtime: python3.8
+      Code:
+      Handler: publish-message.lambda_handler
+      MemorySize: 128
+      Timeout: 10
+      Role:
+        !GetAtt PublishLambdaExecutionRole.Arn

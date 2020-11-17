@@ -1,6 +1,20 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Template for Lambda Function publish message to SNS.
+Parameters:
+  AdminEmail:
+    Type: String
+    Description: Enter an admin's email.
+  TopicName:
+    Type: String
 Resources:
+  OrderSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: !Ref AdminEmail
+          Protocol: 'email'
+      TopicName: !Ref TopicName
+
   # Define lambda execution role
   PublishLambdaExecutionRole:
     Type: 'AWS::IAM::Role'
@@ -11,9 +25,18 @@ Resources:
             Version: '2012-10-17'
             Statement:
               - Action:
-                - lambda:InvokeFunction
+                  - 'lambda:InvokeFunction'
                 Resource:
-                  - arn:aws:lambda:us-west-2:376387039631:function:publishNewOrder*
+                  - 'arn:aws:lambda:us-west-2:376387039631:function:publish-message'
+                Effect: Allow
+              - Action:
+                - 'dynamodb:DescribeStream'
+                - 'dynamodb:GetRecords'
+                - 'dynamodb:GetShardIterator'
+                - 'dynamodb:ListStream'
+                Resource:
+                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/*'
+                Effect: Allow
               - Action:
                 - 'logs:CreateLogGroup'
                 - 'logs:CreateLogStream'
@@ -22,20 +45,10 @@ Resources:
                   - 'arn:aws:logs:*:*:*'
                 Effect: Allow
               - Action:
-                - 'dynamodb:DescribeStream',
-                - 'dynamodb:GetRecords',
-                - 'dynamodb:GetShardIterator',
-                - 'dynamodb:ListStream'
-                Resource:
-                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/*'
-                Effect: Allow
-              - Action:
                 - 'sns:Publish'
                 Resource:
                   - '*'
-                Effect:
-                  - Allow
-
+                Effect: Allow
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -55,9 +68,29 @@ Resources:
       FunctionName: publish-message
       Description: Lambda Function to publish message to SNS topic
       Runtime: python3.8
+      Environment:
+        Variables:
+          TopicName: !Sub arn:aws:sns:us-west-2:376387039631:${TopicName}
       Code:
+        # /Users/hangpham/asoft-projects/training/aws-training/lambda-functions/publish-message.py
+        S3Bucket: pd-lambda-functions
+        S3Key: 9e857d9d21a96ed9e493d022da227d0b
       Handler: publish-message.lambda_handler
       MemorySize: 128
       Timeout: 10
       Role:
         !GetAtt PublishLambdaExecutionRole.Arn
+  OrderLambdaSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 100
+      BisectBatchOnFunctionError: False
+      DestinationConfig: {}
+      Enabled: True
+      EventSourceArn: arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/2020-11-13T07:37:20.681
+      FunctionName: !GetAtt CreateOrderItemFunction.Arn
+      MaximumBatchingWindowInSeconds: 0
+      MaximumRecordAgeInSeconds: 604800
+      MaximumRetryAttempts: 10000
+      ParallelizationFactor: 1
+      StartingPosition: LATEST

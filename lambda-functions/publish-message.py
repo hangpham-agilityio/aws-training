@@ -1,3 +1,4 @@
+import os
 import json
 import boto3
 
@@ -9,7 +10,7 @@ def lambda_handler(event, context):
         if record['eventName'] == 'INSERT':
             try:
                 client.publish(
-                    TopicArn='arn:aws:sns:region:accountID:OrderTopic',
+                    TopicArn=os.environ['TopicName'],
                     Message='An ordered just created successfully!',
                     Subject='A new order is created.'
                 )
@@ -23,4 +24,4 @@ def lambda_handler(event, context):
 
                 return response
             except Exception as e:
-                raise 'Sending message fail.' + e
+                raise e

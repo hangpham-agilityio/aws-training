@@ -4,13 +4,13 @@ phases:
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
-      - REPOSITORY=https://github.com/hangpham-agilityio/aws-training.git
+      - REPOSITORY=https://github.com/hangpham-agilityio/aws-training/blob/aws-practice/sample-product-delivery/cf-templates
   build:
     commands:
       - echo package CFN template
-      - aws cloudformation package --template-file $REPOSITORY/cf-templates/dynamodb-tables.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file dynamodb-tables.yaml
-      - aws cloudformation package --template-file $REPOSITORY/cf-templates/product-delivery-apis.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file product-delivery-apis.yaml
-      - aws cloudformation package --template-file $REPOSITORY/cf-templates/lambda-sns-send-message.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file lambda-sns-send-message.yaml
+      - aws cloudformation package --template-file $REPOSITORY/dynamodb-tables.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file dynamodb-tables.yaml
+      - aws cloudformation package --template-file $REPOSITORY/product-delivery-apis.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file product-delivery-apis.yaml
+      - aws cloudformation package --template-file $REPOSITORY/lambda-sns-send-message.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file lambda-sns-send-message.yaml
   post_build:
     commands:
       - echo upload template to S3

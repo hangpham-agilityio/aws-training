@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
-      - ProjectName=aws-practice/cf-templates
+      - ProjectName=/cf-templates
   build:
     commands:
       - echo package CFN template

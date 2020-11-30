@@ -5,12 +5,13 @@ phases:
     commands:
       - echo Nothing to do in the pre_build phase...
       - ProjectName=cf-templates
+      - S3Bucket=codebuild-sample-templates
   build:
     commands:
       - echo package CFN template
-      - aws cloudformation package --template-file $ProjectName/dynamodb-tables.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file dynamodb-tables.yaml
-      - aws cloudformation package --template-file $ProjectName/product-delivery-apis.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file product-delivery-apis.yaml
-      - aws cloudformation package --template-file $ProjectName/lambda-sns-send-message.yaml --s3-bucket sample-templates --s3-prefix codebuild --output-template-file lambda-sns-send-message.yaml
+      - aws cloudformation package --template-file $ProjectName/dynamodb-tables.yaml --s3-bucket $S3Bucket --s3-prefix codebuild --output-template-file dynamodb-tables.yaml
+      - aws cloudformation package --template-file $ProjectName/product-delivery-apis.yaml --s3-bucket $S3Bucket --s3-prefix codebuild --output-template-file product-delivery-apis.yaml
+      - aws cloudformation package --template-file $ProjectName/lambda-sns-send-message.yaml --s3-bucket $S3Bucket --s3-prefix codebuild --output-template-file lambda-sns-send-message.yaml
   post_build:
     commands:
       - echo upload template to S3

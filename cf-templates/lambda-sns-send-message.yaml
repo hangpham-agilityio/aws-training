@@ -1,6 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Template for Lambda Function publish message to SNS.
 Parameters:
+  StackName:
+    Type: String
   AdminEmail:
     Type: String
     Description: Enter an admin's email.

@@ -1,43 +1,41 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Description: Nested stacks for my sample app
 Metadata:
-  "AWS::CloudFormation::Interface":
+  AWS::CloudFormation::Interface:
     ParameterGroups:
-      - Label:
-          default: Amazon S3 URL
-        Parameters:
-          - TemplateSourceURL
-      - Label:
-          default: Dynamodb
-        Parameters:
-          - FirstTableName
-          - SecondTableName
-          - ReadCapacityUnits
-          - WriteCapacityUnits
-      - Label:
-          default: Cognito
-        Parameters:
-          - CognitoDomain
-          - CallbackURL
-          - IdentityPoolName
-      - Label:
-          default: APIGateway
-        Parameters:
-          - APIName
-          - APIGatewayType
-      - Label:
-          default: SNS
-        Parameters:
-          - AdminEmail
-          - TopicName
-
+    - Label:
+        default: Amazon S3 URL
+      Parameters:
+      - TemplateSourceURL
+    - Label:
+        default: Dynamodb
+      Parameters:
+      - FirstTableName
+      - SecondTableName
+      - ReadCapacityUnits
+      - WriteCapacityUnits
+    - Label:
+        default: Cognito
+      Parameters:
+      - CognitoDomain
+      - CallbackURL
+      - IdentityPoolName
+    - Label:
+        default: APIGateway
+      Parameters:
+      - APIName
+      - APIGatewayType
+    - Label:
+        default: SNS
+      Parameters:
+      - AdminEmail
+      - TopicName
 Parameters:
   TemplateSourceURL:
     Description: Amazon S3 URL where the templates are stored
     Type: String
-    AllowedPattern: "^https?://[^\\s/$.?#].[^\\s]*$"
-    ConstraintDescription: "must be a valid URL."
-
+    AllowedPattern: ^https?://[^\s/$.?#].[^\s]*$
+    ConstraintDescription: must be a valid URL.
   FirstTableName:
     Type: String
   SecondTableName:
@@ -56,7 +54,6 @@ Parameters:
     MinValue: '5'
     MaxValue: '10000'
     ConstraintDescription: must be between 5 and 10000
-
   CognitoDomain:
     Type: String
     AllowedPattern: ^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$
@@ -69,40 +66,49 @@ Parameters:
     Type: String
   APIGatewayType:
     Type: String
-
   AdminEmail:
     Type: String
     Description: Enter an admin's email.
   TopicName:
     Type: String
-
 Resources:
   Database:
-    # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-stack.html
-    Type: "AWS::CloudFormation::Stack"
+    Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        StackName: !Ref AWS::StackName
-        FirstTableName: !Ref FirstTableName
-        SecondTableName: !Ref SecondTableName
-        ReadCapacityUnits: !Ref ReadCapacityUnits
-        WriteCapacityUnits: !Ref WriteCapacityUnits
-        StackName: !Ref AWS::StackName
-        AdminEmail: !Ref AdminEmail
-        TopicName: !Ref TopicName
-
-      TemplateURL: !Sub "${TemplateSourceURL}/dynamodb-tables.yaml"
-
+        StackName:
+          Ref: AWS::StackName
+        FirstTableName:
+          Ref: FirstTableName
+        SecondTableName:
+          Ref: SecondTableName
+        ReadCapacityUnits:
+          Ref: ReadCapacityUnits
+        WriteCapacityUnits:
+          Ref: WriteCapacityUnits
+        AdminEmail:
+          Ref: AdminEmail
+        TopicName:
+          Ref: TopicName
+      TemplateURL:
+        Fn::Sub: ${TemplateSourceURL}/dynamodb-tables.yaml
   Apis:
-    Type: "AWS::CloudFormation::Stack"
+    Type: AWS::CloudFormation::Stack
     DependsOn:
-      - Database
+    - Database
     Properties:
       Parameters:
-        StackName: !Ref AWS::StackName
-        APIName: !Ref APIName
-        APIGatewayType: !Ref APIGatewayType
-        CognitoDomain: !Ref CognitoDomain
-        CallbackURL: !Ref CallbackURL
-        IdentityPoolName: !Ref IdentityPoolName
-      TemplateURL: !Sub "${TemplateSourceURL}/product-delivery-apis.yaml"
+        StackName:
+          Ref: AWS::StackName
+        APIName:
+          Ref: APIName
+        APIGatewayType:
+          Ref: APIGatewayType
+        CognitoDomain:
+          Ref: CognitoDomain
+        CallbackURL:
+          Ref: CallbackURL
+        IdentityPoolName:
+          Ref: IdentityPoolName
+      TemplateURL:
+        Fn::Sub: ${TemplateSourceURL}/product-delivery-apis.yaml

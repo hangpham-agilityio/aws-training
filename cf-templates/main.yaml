@@ -31,7 +31,6 @@ Metadata:
           - AdminEmail
           - TopicName
 
-
 Parameters:
   TemplateSourceURL:
     Description: Amazon S3 URL where the templates are stored
@@ -79,7 +78,7 @@ Parameters:
 
 Resources:
   Database:
-    #AWS-DOC http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-stack.html
+    # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-stack.html
     Type: "AWS::CloudFormation::Stack"
     Properties:
       Parameters:
@@ -88,11 +87,13 @@ Resources:
         SecondTableName: !Ref SecondTableName
         ReadCapacityUnits: !Ref ReadCapacityUnits
         WriteCapacityUnits: !Ref WriteCapacityUnits
+        StackName: !Ref AWS::StackName
+        AdminEmail: !Ref AdminEmail
+        TopicName: !Ref TopicName
 
       TemplateURL: !Sub "${TemplateSourceURL}/dynamodb-tables.yaml"
 
   Apis:
-    #AWS-DOC http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-stack.html
     Type: "AWS::CloudFormation::Stack"
     DependsOn:
       - Database
@@ -105,17 +106,3 @@ Resources:
         CallbackURL: !Ref CallbackURL
         IdentityPoolName: !Ref IdentityPoolName
       TemplateURL: !Sub "${TemplateSourceURL}/product-delivery-apis.yaml"
-
-  LambdaSNS:
-    #AWS-DOC http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-stack.html
-    Type: "AWS::CloudFormation::Stack"
-    DependsOn:
-      - Database
-      - Apis
-
-    Properties:
-      Parameters:
-        StackName: !Ref AWS::StackName
-        AdminEmail: !Ref AdminEmail
-        TopicName: !Ref TopicName
-      TemplateURL: !Sub "${TemplateSourceURL}/lambda-sns-send-message.yaml"

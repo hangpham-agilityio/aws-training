@@ -1,5 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Nested stacks for my sample app
+Capabilities:
+  - CAPABILITY_IAM
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:

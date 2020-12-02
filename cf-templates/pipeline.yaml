@@ -31,7 +31,7 @@ Resources:
   PipelineArtifactsBucket:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: !Sub "${Environment}-pipeline-bucket"
+      BucketName: !Sub "${Environment}-pd-pipeline-bucket"
 
   CodeBuildRole:
     # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
@@ -147,7 +147,6 @@ Resources:
               StackName: !Sub "$Environment-main-stack"
               Capabilities: CAPABILITY_IAM
               RoleArn: !GetAtt CloudFormationRole.Arn
-              TemplatePath: "SourceArtifact::main-updated.yaml"
               ParameterOverrides: >
                 '{
                   "FirstTableName": "Product",

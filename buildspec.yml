@@ -5,7 +5,7 @@ phases:
     commands:
       - echo Nothing to do in the pre_build phase...
       - ProjectName=cf-templates
-      - S3Bucket=codebuild-sample-templates
+      - S3Bucket=codebuild-nested-templates
   build:
     commands:
       - echo package CFN template

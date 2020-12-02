@@ -13,3 +13,7 @@ phases:
   post_build:
     commands:
       - echo upload template to S3 completed
+  artifacts:
+    files:
+      - main-updated.yaml
+    discard-paths: yes

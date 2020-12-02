@@ -5,10 +5,6 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
-        default: Amazon S3 URL
-      Parameters:
-      - TemplateSourceURL
-    - Label:
         default: Dynamodb
       Parameters:
       - FirstTableName
@@ -32,11 +28,6 @@ Metadata:
       - AdminEmail
       - TopicName
 Parameters:
-  TemplateSourceURL:
-    Description: Amazon S3 URL where the templates are stored
-    Type: String
-    AllowedPattern: ^https?://[^\s/$.?#].[^\s]*$
-    ConstraintDescription: must be a valid URL.
   FirstTableName:
     Type: String
   SecondTableName:
@@ -91,8 +82,7 @@ Resources:
           Ref: AdminEmail
         TopicName:
           Ref: TopicName
-      TemplateURL:
-        Fn::Sub: ${TemplateSourceURL}/dynamodb-tables.yaml
+      TemplateURL: ./dynamodb-tables.yaml
   Apis:
     Type: AWS::CloudFormation::Stack
     DependsOn:
@@ -111,5 +101,4 @@ Resources:
           Ref: CallbackURL
         IdentityPoolName:
           Ref: IdentityPoolName
-      TemplateURL:
-        Fn::Sub: ${TemplateSourceURL}/product-delivery-apis.yaml
+      TemplateURL: ./product-delivery-apis.yaml

@@ -155,7 +155,7 @@ Resources:
                 TemplatePath: "BuildArtifacts::main-updated.yaml"
               RunOrder: 1
               ParameterOverrides: >
-                '{
+                {
                   "FirstTableName": "Product",
                   "SecondTableName": "Order",
                   "ReadCapacityUnits": "5",
@@ -166,8 +166,8 @@ Resources:
                   "APIName": "product-delivery",
                   "APIGatewayType": "REGIONAL",
                   "AdminEmail": "hangpham0506@gmail.com",
-                  "TopicName": "Order-Topic",
-                }'
+                  "TopicName": "Order-Topic"
+                }
 
   CodeBuild:
     # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html

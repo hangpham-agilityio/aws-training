@@ -154,20 +154,7 @@ Resources:
                 RoleArn: !GetAtt CloudFormationRole.Arn
                 TemplatePath: "BuildArtifacts::main-updated.yaml"
               RunOrder: 2
-              ParameterOverrides: >
-                '{
-                  "FirstTableName": "Product",
-                  "SecondTableName": "Order",
-                  "ReadCapacityUnits": "5",
-                  "WriteCapacityUnits": "5",
-                  "CognitoDomain": "product-delivery",
-                  "CallbackURL": "https://example.com",
-                  "IdentityPoolName": "my-dp",
-                  "APIName": "product-delivery",
-                  "APIGatewayType": "REGIONAL",
-                  "AdminEmail": "hangpham0506@gmail.com",
-                  "TopicName": "Order-Topic"
-                }'
+              ParameterOverrides: '{"FirstTableName": "Product", "SecondTableName": "Order", "ReadCapacityUnits": "5", "WriteCapacityUnits": "5", "CognitoDomain": "product-delivery", "CallbackURL": "https://example.com", "IdentityPoolName": "my-dp", "APIName": "product-delivery", "APIGatewayType": "REGIONAL", "AdminEmail": "hangpham0506@gmail.com", "TopicName": "Order-Topic"}'
 
   CodeBuild:
     # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html

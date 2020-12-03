@@ -149,7 +149,7 @@ Resources:
                 - Name: BuildArtifacts
               Configuration:
                 ActionMode: CREATE_UPDATE
-                StackName: !Sub "$Environment-main-stack"
+                StackName: !Sub "$EnvironmentMainStack"
                 Capabilities: CAPABILITY_IAM
                 RoleArn: !GetAtt CloudFormationRole.Arn
                 TemplatePath: "BuildArtifacts::main-updated.yaml"

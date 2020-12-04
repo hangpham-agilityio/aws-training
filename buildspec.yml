@@ -4,12 +4,11 @@ phases:
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
-      - ProjectName=cf-templates
       - S3Bucket=codebuild-nested-templates
   build:
     commands:
       - echo package CFN template
-      - aws cloudformation package --template-file $ProjectName/main.yaml --s3-bucket $S3Bucket --output-template-file main-updated.yaml
+      - aws cloudformation package --template-file ./main.yaml --s3-bucket $S3Bucket --output-template-file main-updated.yaml
   post_build:
     commands:
       - echo upload template to S3 completed

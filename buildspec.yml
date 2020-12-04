@@ -15,5 +15,5 @@ phases:
       - echo upload template to S3 completed
 artifacts:
   files:
-    - $ProjectName/main-updated.yaml
+    - main-updated.yaml
   discard-paths: yes

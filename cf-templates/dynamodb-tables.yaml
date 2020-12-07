@@ -114,7 +114,7 @@ Resources:
   # Define publish message lambda function
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-package.html (Using the package command to upload local artifacts to S3 bucket)
   # In origin template define attribute Code: local path of function (/Users/hangpham/aws-training/function_name.py)
-  CreateOrderItemFunction:
+  PublishMessageFunction:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: publish-message
@@ -141,7 +141,7 @@ Resources:
       Enabled: True
       # EventSourceArn: arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/2020-11-13T07:37:20.681
       EventSourceArn: !GetAtt orderTable.StreamArn
-      FunctionName: !GetAtt CreateOrderItemFunction.Arn
+      FunctionName: !GetAtt PublishMessageFunction.Arn
       MaximumBatchingWindowInSeconds: 0
       MaximumRecordAgeInSeconds: 604800
       MaximumRetryAttempts: 10000

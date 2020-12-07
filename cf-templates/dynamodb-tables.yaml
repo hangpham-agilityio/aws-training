@@ -123,7 +123,7 @@ Resources:
       Environment:
         Variables:
           TopicName: !Sub arn:aws:sns:us-west-2:376387039631:${TopicName}
-      Code: ../lambda-functions/publish-message.py
+      Code: ../lambda-functions/publish-message-func/publish-message.py
         # S3Bucket: pd-lambda-functions
         # S3Key: 9e857d9d21a96ed9e493d022da227d0b
       Handler: publish-message.lambda_handler

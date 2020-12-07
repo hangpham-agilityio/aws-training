@@ -16,4 +16,3 @@ phases:
 artifacts:
   files:
     - ./main-updated.yaml
-  discard-paths: yes

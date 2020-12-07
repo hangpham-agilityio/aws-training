@@ -280,7 +280,7 @@ Resources:
       Code:  ../lambda-functions/create-product-func/create-product.py
         # S3Bucket: create-product-function
         # S3Key: 92ee1584456d4339e71652216a1a6b88
-      Handler: create-product-func/create-product.lambda_handler
+      Handler: create-product.lambda_handler
       MemorySize: 128
       Timeout: 10
       Role:
@@ -420,7 +420,7 @@ Resources:
       Code: ../lambda-functions/create-order-func/create-order.py
         # S3Bucket: pd-lambda-functions
         # S3Key: fa6e10ab74a966e3c5ee52924dbd1401
-      Handler: create-order-func/create-order.lambda_handler
+      Handler: create-order.lambda_handler
       MemorySize: 128
       Timeout: 10
       Role:

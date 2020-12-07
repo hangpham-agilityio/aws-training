@@ -68,82 +68,82 @@ Resources:
       TopicName: !Ref TopicName
 
   # Define lambda execution role
-  # PublishLambdaExecutionRole:
-  #   Type: 'AWS::IAM::Role'
-  #   Properties:
-  #     Policies:
-  #       - PolicyName: LambdaPolicyPublishMessage
-  #         PolicyDocument:
-  #           Version: '2012-10-17'
-  #           Statement:
-  #             - Action:
-  #                 - 'lambda:InvokeFunction'
-  #               Resource:
-  #                 - 'arn:aws:lambda:us-west-2:376387039631:function:publish-message'
-  #               Effect: Allow
-  #             - Action:
-  #               - 'dynamodb:DescribeStream'
-  #               - 'dynamodb:GetRecords'
-  #               - 'dynamodb:GetShardIterator'
-  #               - 'dynamodb:ListStream'
-  #               Resource:
-  #                 - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/*'
-  #               Effect: Allow
-  #             - Action:
-  #               - 'logs:CreateLogGroup'
-  #               - 'logs:CreateLogStream'
-  #               - 'logs:PutLogEvents'
-  #               Resource:
-  #                 - 'arn:aws:logs:*:*:*'
-  #               Effect: Allow
-  #             - Action:
-  #               - 'sns:Publish'
-  #               Resource:
-  #                 - '*'
-  #               Effect: Allow
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Action:
-  #             - 'sts:AssumeRole'
-  #           Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - lambda.amazonaws.com
+  PublishLambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Policies:
+        - PolicyName: LambdaPolicyPublishMessage
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - 'lambda:InvokeFunction'
+                Resource:
+                  - 'arn:aws:lambda:us-west-2:376387039631:function:publish-message'
+                Effect: Allow
+              - Action:
+                - 'dynamodb:DescribeStream'
+                - 'dynamodb:GetRecords'
+                - 'dynamodb:GetShardIterator'
+                - 'dynamodb:ListStream'
+                Resource:
+                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/*'
+                Effect: Allow
+              - Action:
+                - 'logs:CreateLogGroup'
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+                Resource:
+                  - 'arn:aws:logs:*:*:*'
+                Effect: Allow
+              - Action:
+                - 'sns:Publish'
+                Resource:
+                  - '*'
+                Effect: Allow
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
 
   # Define publish message lambda function
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-package.html (Using the package command to upload local artifacts to S3 bucket)
-  # In origin template define attribute Code: local path of function (/Users/hangpham/aws-training/function_name.py)
-  # PublishMessageFunction:
-  #   Type: AWS::Lambda::Function
-  #   Properties:
-  #     FunctionName: publish-message
-  #     Description: Lambda Function to publish message to SNS topic
-  #     Runtime: python3.8
-  #     Environment:
-  #       Variables:
-  #         TopicName: !Sub arn:aws:sns:us-west-2:376387039631:${TopicName}
-  #     Code: ../lambda-functions/publish-message-func/publish-message.py
-  #       # S3Bucket: pd-lambda-functions
-  #       # S3Key: 9e857d9d21a96ed9e493d022da227d0b
-  #     Handler: publish-message-func/publish-message.lambda_handler
-  #     MemorySize: 128
-  #     Timeout: 10
-  #     Role:
-  #       !GetAtt PublishLambdaExecutionRole.Arn
+  In origin template define attribute Code: local path of function (/Users/hangpham/aws-training/function_name.py)
+  PublishMessageFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: publish-message
+      Description: Lambda Function to publish message to SNS topic
+      Runtime: python3.8
+      Environment:
+        Variables:
+          TopicName: !Sub arn:aws:sns:us-west-2:376387039631:${TopicName}
+      Code: ../lambda-functions/publish-message-func/publish-message.py
+        # S3Bucket: pd-lambda-functions
+        # S3Key: 9e857d9d21a96ed9e493d022da227d0b
+      Handler: publish-message.lambda_handler
+      MemorySize: 128
+      Timeout: 10
+      Role:
+        !GetAtt PublishLambdaExecutionRole.Arn
 
-  # OrderLambdaSourceMapping:
-  #   Type: AWS::Lambda::EventSourceMapping
-  #   Properties:
-  #     BatchSize: 100
-  #     BisectBatchOnFunctionError: False
-  #     DestinationConfig: {}
-  #     Enabled: True
-  #     # EventSourceArn: arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/2020-11-13T07:37:20.681
-  #     EventSourceArn: !GetAtt orderTable.StreamArn
-  #     FunctionName: !GetAtt PublishMessageFunction.Arn
-  #     MaximumBatchingWindowInSeconds: 0
-  #     MaximumRecordAgeInSeconds: 604800
-  #     MaximumRetryAttempts: 10000
-  #     ParallelizationFactor: 1
-  #     StartingPosition: LATEST
+  OrderLambdaSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 100
+      BisectBatchOnFunctionError: False
+      DestinationConfig: {}
+      Enabled: True
+      # EventSourceArn: arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/2020-11-13T07:37:20.681
+      EventSourceArn: !GetAtt orderTable.StreamArn
+      FunctionName: !GetAtt PublishMessageFunction.Arn
+      MaximumBatchingWindowInSeconds: 0
+      MaximumRecordAgeInSeconds: 604800
+      MaximumRetryAttempts: 10000
+      ParallelizationFactor: 1
+      StartingPosition: LATEST

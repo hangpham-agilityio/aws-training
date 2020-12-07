@@ -82,7 +82,7 @@ Resources:
           Ref: AdminEmail
         TopicName:
           Ref: TopicName
-      TemplateURL: ./dynamodb-tables.yaml
+      TemplateURL: ./cf-templates/dynamodb-tables.yaml
   Apis:
     Type: AWS::CloudFormation::Stack
     DependsOn:
@@ -101,4 +101,4 @@ Resources:
           Ref: CallbackURL
         IdentityPoolName:
           Ref: IdentityPoolName
-      TemplateURL: ./product-delivery-apis.yaml
+      TemplateURL: ./cf-templates/product-delivery-apis.yaml

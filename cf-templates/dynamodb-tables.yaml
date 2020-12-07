@@ -114,36 +114,36 @@ Resources:
   # Define publish message lambda function
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-package.html (Using the package command to upload local artifacts to S3 bucket)
   # In origin template define attribute Code: local path of function (/Users/hangpham/aws-training/function_name.py)
-  CreateOrderItemFunction:
-    Type: AWS::Lambda::Function
-    Properties:
-      FunctionName: publish-message
-      Description: Lambda Function to publish message to SNS topic
-      Runtime: python3.8
-      Environment:
-        Variables:
-          TopicName: !Sub arn:aws:sns:us-west-2:376387039631:${TopicName}
-      Code: ../lambda-functions/publish-message.py
-        # S3Bucket: pd-lambda-functions
-        # S3Key: 9e857d9d21a96ed9e493d022da227d0b
-      Handler: publish-message.lambda_handler
-      MemorySize: 128
-      Timeout: 10
-      Role:
-        !GetAtt PublishLambdaExecutionRole.Arn
+  # CreateOrderItemFunction:
+  #   Type: AWS::Lambda::Function
+  #   Properties:
+  #     FunctionName: publish-message
+  #     Description: Lambda Function to publish message to SNS topic
+  #     Runtime: python3.8
+  #     Environment:
+  #       Variables:
+  #         TopicName: !Sub arn:aws:sns:us-west-2:376387039631:${TopicName}
+  #     Code: ../lambda-functions/publish-message.py
+  #       # S3Bucket: pd-lambda-functions
+  #       # S3Key: 9e857d9d21a96ed9e493d022da227d0b
+  #     Handler: publish-message.lambda_handler
+  #     MemorySize: 128
+  #     Timeout: 10
+  #     Role:
+  #       !GetAtt PublishLambdaExecutionRole.Arn
 
-  OrderLambdaSourceMapping:
-    Type: AWS::Lambda::EventSourceMapping
-    Properties:
-      BatchSize: 100
-      BisectBatchOnFunctionError: False
-      DestinationConfig: {}
-      Enabled: True
-      # EventSourceArn: arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/2020-11-13T07:37:20.681
-      EventSourceArn: !GetAtt orderTable.StreamArn
-      FunctionName: !GetAtt CreateOrderItemFunction.Arn
-      MaximumBatchingWindowInSeconds: 0
-      MaximumRecordAgeInSeconds: 604800
-      MaximumRetryAttempts: 10000
-      ParallelizationFactor: 1
-      StartingPosition: LATEST
+  # OrderLambdaSourceMapping:
+  #   Type: AWS::Lambda::EventSourceMapping
+  #   Properties:
+  #     BatchSize: 100
+  #     BisectBatchOnFunctionError: False
+  #     DestinationConfig: {}
+  #     Enabled: True
+  #     # EventSourceArn: arn:aws:dynamodb:us-west-2:376387039631:table/Order/stream/2020-11-13T07:37:20.681
+  #     EventSourceArn: !GetAtt orderTable.StreamArn
+  #     FunctionName: !GetAtt CreateOrderItemFunction.Arn
+  #     MaximumBatchingWindowInSeconds: 0
+  #     MaximumRecordAgeInSeconds: 604800
+  #     MaximumRetryAttempts: 10000
+  #     ParallelizationFactor: 1
+  #     StartingPosition: LATEST

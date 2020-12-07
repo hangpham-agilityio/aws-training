@@ -113,7 +113,7 @@ Resources:
 
   # Define publish message lambda function
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-package.html (Using the package command to upload local artifacts to S3 bucket)
-  In origin template define attribute Code: local path of function (/Users/hangpham/aws-training/function_name.py)
+  # In origin template define attribute Code: local path of function (/Users/hangpham/aws-training/function_name.py)
   PublishMessageFunction:
     Type: AWS::Lambda::Function
     Properties:

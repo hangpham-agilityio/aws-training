@@ -7,17 +7,19 @@
 - User register account
 - Admin manage products (CRUD)
 - Customer can order product
-- System send email to customer when user order product successfully
+- System send email to admin when user order product successfully
 - Using CI/CD to deploy application
 
 **AWS SERVICES ARE USING IN APPLICATION**
 
-- IAM 
+- IAM
 - Cognito manage users
-- DynamoDB manage products
+- DynamoDB manage products and orders
 - API Gateway
 - Lambda function
 - CloudFomation
+- CodeBuild
+- CodePipeline
 
 **DIAGRAM ARCHITECTURE**
 

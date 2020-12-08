@@ -31,6 +31,7 @@
 
 
 **INSTALL APP**
+- Checkout branch: aws-practice/sample-product-delivery
 - Create pipeline stack using pipeline.yaml template file
 - After pipeline stack is created, three stages of pipeline: Source, Build and Deploy running, all resources in main.yaml template are created
 

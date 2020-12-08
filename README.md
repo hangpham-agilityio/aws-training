@@ -35,12 +35,13 @@
 - After pipeline stack is created, three stages of pipeline: Source, Build and Deploy running, all resources in main.yaml template are created
 
 **SIGN-UP/LOGIN**
-For POSTMAN, setup in Authorization tab
-- Auth URL: https://product-delivery.auth.us-west-2.amazoncognito.com/login
-- ClientID: 32kv6hqio5f6vptfl8qm61llsi
-- Callback URL: https://example.com
+- For POSTMAN, setup in Authorization tab
+    - Auth URL: https://product-delivery.auth.us-west-2.amazoncognito.com/login
+    - ClientID: 32kv6hqio5f6vptfl8qm61llsi
+    - Callback URL: https://example.com
 
-OR HostedUIURL: https://product-delivery.auth.us-west-2.amazoncognito.com/login?client_id=32kv6hqio5f6vptfl8qm61llsi&response_type=token&scope=email&redirect_uri=https://example.com
+- OR HostedUIURL:
+    - https://product-delivery.auth.us-west-2.amazoncognito.com/login?client_id=32kv6hqio5f6vptfl8qm61llsi&response_type=token&scope=email&redirect_uri=https://example.com
 
 **APIs**
 - Create product: https://0nrifxek1k.execute-api.us-west-2.amazonaws.com/v0/products

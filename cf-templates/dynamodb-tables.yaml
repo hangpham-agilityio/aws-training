@@ -1,5 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Parameters:
+  StackName:
+    Type: String
   ProductTable:
     Type: String
   OrderTable:

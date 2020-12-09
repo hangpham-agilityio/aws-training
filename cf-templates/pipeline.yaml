@@ -153,7 +153,7 @@ Resources:
                 Capabilities: CAPABILITY_IAM
                 RoleArn: !GetAtt CloudFormationRole.Arn
                 TemplatePath: BuildArtifacts::main-updated.yaml
-                TemplateConfiguration: Source::parameters.json
+                TemplateConfiguration: SourceArtifacts::parameters.json
                 # ParameterOverrides: |-
                 #   {
                 #     "ProductTable": "Product",

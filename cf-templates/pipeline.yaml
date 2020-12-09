@@ -155,10 +155,8 @@ Resources:
                 TemplatePath: "BuildArtifacts::main-updated.yaml"
                 ParameterOverrides: |-
                   {
-                    "FirstTableName": "Product",
-                    "SecondTableName": "Order",
-                    "ReadCapacityUnits": "5",
-                    "WriteCapacityUnits": "5",
+                    "ProductTable": "Product",
+                    "OrderTable": "Order",
                     "CognitoDomain": "product-delivery",
                     "CallbackURL": "https://example.com",
                     "IdentityPoolName": "my-dp",

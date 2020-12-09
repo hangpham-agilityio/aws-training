@@ -7,10 +7,8 @@ Metadata:
     - Label:
         default: Dynamodb
       Parameters:
-      - FirstTableName
-      - SecondTableName
-      - ReadCapacityUnits
-      - WriteCapacityUnits
+      - ProductTable
+      - OrderTable
     - Label:
         default: Cognito
       Parameters:
@@ -28,24 +26,10 @@ Metadata:
       - AdminEmail
       - TopicName
 Parameters:
-  FirstTableName:
+  ProductTable:
     Type: String
-  SecondTableName:
+  OrderTable:
     Type: String
-  ReadCapacityUnits:
-    Description: Provisioned read throughput
-    Type: Number
-    Default: '5'
-    MinValue: '5'
-    MaxValue: '10000'
-    ConstraintDescription: must be between 5 and 10000
-  WriteCapacityUnits:
-    Description: Provisioned write throughput
-    Type: Number
-    Default: '5'
-    MinValue: '5'
-    MaxValue: '10000'
-    ConstraintDescription: must be between 5 and 10000
   CognitoDomain:
     Type: String
     AllowedPattern: ^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$
@@ -70,14 +54,10 @@ Resources:
       Parameters:
         StackName:
           Ref: AWS::StackName
-        FirstTableName:
-          Ref: FirstTableName
-        SecondTableName:
-          Ref: SecondTableName
-        ReadCapacityUnits:
-          Ref: ReadCapacityUnits
-        WriteCapacityUnits:
-          Ref: WriteCapacityUnits
+        ProductTable:
+          Ref: ProductTable
+        OrderTable:
+          Ref: OrderTable
         AdminEmail:
           Ref: AdminEmail
         TopicName:

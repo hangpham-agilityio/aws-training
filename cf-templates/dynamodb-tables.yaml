@@ -1,25 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 Parameters:
-  StackName:
+  ProductTable:
     Type: String
-  FirstTableName:
+  OrderTable:
     Type: String
-  SecondTableName:
-    Type: String
-  ReadCapacityUnits:
-    Description: Provisioned read throughput
-    Type: Number
-    Default: '5'
-    MinValue: '5'
-    MaxValue: '10000'
-    ConstraintDescription: must be between 5 and 10000
-  WriteCapacityUnits:
-    Description: Provisioned write throughput
-    Type: Number
-    Default: '5'
-    MinValue: '5'
-    MaxValue: '10000'
-    ConstraintDescription: must be between 5 and 10000
   AdminEmail:
     Type: String
     Description: Enter an admin's email.
@@ -37,10 +21,8 @@ Resources:
         -
           AttributeName: "product_id"
           KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: !Ref ReadCapacityUnits
-        WriteCapacityUnits: !Ref WriteCapacityUnits
-      TableName: !Ref FirstTableName
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Ref ProductTable
   orderTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
@@ -52,10 +34,8 @@ Resources:
         -
           AttributeName: "order_id"
           KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: !Ref ReadCapacityUnits
-        WriteCapacityUnits: !Ref WriteCapacityUnits
-      TableName: !Ref SecondTableName
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Ref OrderTable
       StreamSpecification:
         StreamViewType: NEW_IMAGE
 

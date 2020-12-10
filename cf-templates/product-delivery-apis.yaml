@@ -73,7 +73,7 @@ Resources:
               - Action:
                   - 'execute-api:Invoke'
                 Resource:
-                  - 'arn:aws:execute-api:us-west-2:376387039631:vwi4uy98m0/*/*/products'
+                  - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/products
                 Effect: Allow
               - Action:
                 - 'dynamodb:PutItem'
@@ -83,7 +83,7 @@ Resources:
                 - 'dynamodb:PutItem'
                 - 'dynamodb:UpdateItem'
                 Resource:
-                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Product'
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Product
                 Effect: Allow
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -107,6 +107,7 @@ Resources:
 
   CognitoCustomerGroupRole:
     Type: 'AWS::IAM::Role'
+    DependsOn: ApiGatewayRestApi
     Properties:
       Policies:
         - PolicyName: CustomerGroupRole
@@ -116,7 +117,7 @@ Resources:
               - Action:
                   - 'execute-api:Invoke'
                 Resource:
-                  - 'arn:aws:execute-api:us-west-2:376387039631:vwi4uy98m0/*/*/orders'
+                  - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/orders
                 Effect: Allow
               - Action:
                 - 'dynamodb:PutItem'
@@ -126,7 +127,7 @@ Resources:
                 - 'dynamodb:PutItem'
                 - 'dynamodb:UpdateItem'
                 Resource:
-                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order'
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Order
                 Effect: Allow
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -216,7 +217,7 @@ Resources:
         "unauthenticated": !GetAtt CognitoUnauthenticateRole.Arn
       RoleMappings:
         "cognito-identity.amazonaws.com":
-          IdentityProvider: !Sub cognito-idp.us-west-2.amazonaws.com/${UserPool}:${UserPoolClient}
+          IdentityProvider: !Sub cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}:${UserPoolClient}
           AmbiguousRoleResolution: AuthenticatedRole
           Type: Rules
           RulesConfiguration:
@@ -256,7 +257,7 @@ Resources:
                 - 'dynamodb:PutItem'
                 - 'dynamodb:UpdateItem'
                 Resource:
-                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Product'
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Product
                 Effect: Allow
 
       AssumeRolePolicyDocument:
@@ -395,7 +396,7 @@ Resources:
                 - 'dynamodb:PutItem'
                 - 'dynamodb:UpdateItem'
                 Resource:
-                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order'
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Order
                 Effect: Allow
 
       AssumeRolePolicyDocument:
@@ -501,5 +502,5 @@ Outputs:
     Value: !Ref UserPoolClient
     Description: The app client
   HostedUIURL:
-    Value: !Sub https://${CognitoDomain}.auth.us-west-2.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=token&scope=email+openid+profile&redirect_uri=${CallbackURL}
+    Value: !Sub https://${CognitoDomain}.auth.${AWS::Region}.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=token&scope=email&redirect_uri=${CallbackURL}
     Description: The hosted UI URL

@@ -62,6 +62,91 @@ Resources:
       Domain: !Ref CognitoDomain
       UserPoolId: !Ref UserPool
 
+  CognitoAdminGroupRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Policies:
+        - PolicyName: AdminGroupRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - 'execute-api:Invoke'
+                Resource:
+                  - 'arn:aws:execute-api:us-west-2:376387039631:vwi4uy98m0/*/*/products'
+                Effect: Allow
+              - Action:
+                - 'dynamodb:PutItem'
+                - 'dynamodb:GetItem'
+                - 'dynamodb:Query'
+                - 'dynamodb:Scan'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:UpdateItem'
+                Resource:
+                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Product'
+                Effect: Allow
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - cognito-idp.amazonaws.com
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cognito-userpoolgroup.html
+  UserPoolAdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      Description: Group for admin user
+      GroupName: Admin
+      Precedence: 0
+      RoleArn: !GetAtt CognitoAdminGroupRole.Arn
+      UserPoolId: !Ref UserPool
+
+  CognitoCustomerGroupRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Policies:
+        - PolicyName: CustomerGroupRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - 'execute-api:Invoke'
+                Resource:
+                  - 'arn:aws:execute-api:us-west-2:376387039631:vwi4uy98m0/*/*/orders'
+                Effect: Allow
+              - Action:
+                - 'dynamodb:PutItem'
+                - 'dynamodb:GetItem'
+                - 'dynamodb:Query'
+                - 'dynamodb:Scan'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:UpdateItem'
+                Resource:
+                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order'
+                Effect: Allow
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - cognito-idp.amazonaws.com
+
+  UserPoolCustomerGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      Description: Group for customer user
+      GroupName: Customer
+      Precedence: 1
+      RoleArn: !GetAtt CognitoCustomerGroupRole.Arn
+      UserPoolId: !Ref UserPool
+
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cognito-identitypool.html
   CognitoIdentityPool:
     Type: AWS::Cognito::IdentityPool
@@ -131,7 +216,7 @@ Resources:
         "unauthenticated": !GetAtt CognitoUnauthenticateRole.Arn
       RoleMappings:
         "cognito-identity.amazonaws.com":
-          IdentityProvider: !Sub cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}:${UserPoolClient}
+          IdentityProvider: !Sub cognito-idp.us-west-2.amazonaws.com/${UserPool}:${UserPoolClient}
           AmbiguousRoleResolution: AuthenticatedRole
           Type: Rules
           RulesConfiguration:
@@ -171,7 +256,7 @@ Resources:
                 - 'dynamodb:PutItem'
                 - 'dynamodb:UpdateItem'
                 Resource:
-                  - 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Product'
+                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Product'
                 Effect: Allow
 
       AssumeRolePolicyDocument:
@@ -310,7 +395,7 @@ Resources:
                 - 'dynamodb:PutItem'
                 - 'dynamodb:UpdateItem'
                 Resource:
-                  - 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Order'
+                  - 'arn:aws:dynamodb:us-west-2:376387039631:table/Order'
                 Effect: Allow
 
       AssumeRolePolicyDocument:
@@ -408,91 +493,6 @@ Resources:
       ProviderARNs:
         - !GetAtt UserPool.Arn
 
-  CognitoAdminGroupRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      Policies:
-        - PolicyName: AdminGroupRole
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Action:
-                  - 'execute-api:Invoke'
-                Resource:
-                  - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:{ApiGatewayRestApi}/*/*/products'
-                Effect: Allow
-              - Action:
-                - 'dynamodb:PutItem'
-                - 'dynamodb:GetItem'
-                - 'dynamodb:Query'
-                - 'dynamodb:Scan'
-                - 'dynamodb:PutItem'
-                - 'dynamodb:UpdateItem'
-                Resource:
-                  - 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Product'
-                Effect: Allow
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Action:
-              - 'sts:AssumeRole'
-            Effect: Allow
-            Principal:
-              Service:
-                - cognito-idp.amazonaws.com
-
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cognito-userpoolgroup.html
-  UserPoolAdminGroup:
-    Type: AWS::Cognito::UserPoolGroup
-    Properties:
-      Description: Group for admin user
-      GroupName: Admin
-      Precedence: 0
-      RoleArn: !GetAtt CognitoAdminGroupRole.Arn
-      UserPoolId: !Ref UserPool
-
-  CognitoCustomerGroupRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      Policies:
-        - PolicyName: CustomerGroupRole
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Action:
-                  - 'execute-api:Invoke'
-                Resource:
-                  - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/orders'
-                Effect: Allow
-              - Action:
-                - 'dynamodb:PutItem'
-                - 'dynamodb:GetItem'
-                - 'dynamodb:Query'
-                - 'dynamodb:Scan'
-                - 'dynamodb:PutItem'
-                - 'dynamodb:UpdateItem'
-                Resource:
-                  - 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Order'
-                Effect: Allow
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Action:
-              - 'sts:AssumeRole'
-            Effect: Allow
-            Principal:
-              Service:
-                - cognito-idp.amazonaws.com
-
-  UserPoolCustomerGroup:
-    Type: AWS::Cognito::UserPoolGroup
-    Properties:
-      Description: Group for customer user
-      GroupName: Customer
-      Precedence: 1
-      RoleArn: !GetAtt CognitoCustomerGroupRole.Arn
-      UserPoolId: !Ref UserPool
-
 Outputs:
   CognitoUserPoolID:
     Value: !Ref UserPool
@@ -501,5 +501,5 @@ Outputs:
     Value: !Ref UserPoolClient
     Description: The app client
   HostedUIURL:
-    Value: !Sub https://${CognitoDomain}.auth.${AWS::Region}.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=token&scope=email+openid+profile&redirect_uri=${CallbackURL}
+    Value: !Sub https://${CognitoDomain}.auth.us-west-2.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=token&scope=email+openid+profile&redirect_uri=${CallbackURL}
     Description: The hosted UI URL

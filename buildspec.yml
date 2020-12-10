@@ -4,7 +4,6 @@ phases:
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
-      - ProjectName=cf-templates
       - S3Bucket=codebuild-nested-templates
   build:
     commands:

@@ -146,6 +146,7 @@ Resources:
                 Provider: CloudFormation
                 Version: 1
               InputArtifacts:
+                - Name: SourceArtifacts
                 - Name: BuildArtifacts
               Configuration:
                 ActionMode: CREATE_UPDATE

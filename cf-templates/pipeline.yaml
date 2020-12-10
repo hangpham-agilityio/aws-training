@@ -58,9 +58,7 @@ Resources:
                   - '*'
                 Effect: Allow
               - Action:
-                - 's3:GetObject'
-                - 's3:GetObjectVersion'
-                - 's3:PutObject'
+                - 's3:*'
                 Resource:
                   - '*'
                 Effect: Allow
@@ -86,19 +84,24 @@ Resources:
             Version: '2012-10-17'
             Statement:
               - Action:
-                - 'iam:PassRole'
-                Resource:
-                  - 'arn:aws:logs:*:*:*'
-                Effect: Allow
-              - Action:
                 - 'github:GitPull'
                 Resource:
                   - '*'
                 Effect: Allow
               - Action:
-                - 's3:GetObject'
-                - 's3:GetObjectVersion'
-                - 's3:PutObject'
+                - 'codebuild:BatchGetBuilds'
+                - 'codebuild:StartBuild'
+                Resource:
+                  - '*'
+                Effect: Allow
+              - Action:
+                - 'cloudformation:*'
+                - 'iam:*'
+                - 'dynamodb:*'
+                - 'SNS:*'
+                - 'cognito-idp:*'
+                - 'cognito-identity:*'
+                - 's3:*'
                 Resource:
                   - '*'
                 Effect: Allow
@@ -115,54 +118,12 @@ Resources:
       #   - arn:aws:iam::aws:policy/AdministratorAccess
       RoleName: "codepipeline-role"
 
-  CloudFormationRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      Policies:
-        - PolicyName: CodePipelinePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Action:
-                - 'cloudformation:CreateStack'
-                - 'cloudformation:DeleteStack'
-                - 'cloudformation:DescribeStacks'
-                - 'cloudformation:UpdateStack'
-                - 'cloudformation:CreateChangeSet'
-                - 'cloudformation:DeleteChangeSet'
-                - 'cloudformation:DescribeChangeSet'
-                - 'cloudformation:ExecuteChangeSet'
-                - 'cloudformation:SetStackPolicy'
-                - 'cloudformation:ValidateTemplate'
-                - 'iam:PassRole'
-                Resource:
-                  - 'arn:aws:logs:*:*:*'
-                Effect: Allow
-              - Action:
-                - 's3:PutObject'
-                Resource:
-                  - '*'
-                Effect: Allow
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - cloudformation.amazonaws.com
-            Action:
-              - "sts:AssumeRole"
-      # ManagedPolicyArns:
-      #   - arn:aws:iam::aws:policy/AdministratorAccess
-      RoleName: "cloudformation-role"
-
   CodePipeline:
     # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codepipeline-pipeline.html
     Type: "AWS::CodePipeline::Pipeline"
     DependsOn:
       - PipelineArtifactsBucket
       - CodePipelineRole
-      - CloudFormationRole
     Properties:
       ArtifactStore:
         Type: S3
@@ -224,7 +185,7 @@ Resources:
                 ActionMode: CREATE_UPDATE
                 StackName: MainStack
                 Capabilities: CAPABILITY_IAM
-                RoleArn: !GetAtt CloudFormationRole.Arn
+                RoleArn: !GetAtt CodePipelineRole.Arn
                 TemplatePath: BuildArtifacts::main-updated.yaml
                 TemplateConfiguration: SourceArtifacts::parameters.json
               RunOrder: 1

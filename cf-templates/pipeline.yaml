@@ -40,7 +40,8 @@ Resources:
     # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
     Type: "AWS::IAM::Role"
     Properties:
-      - PolicyName: CodeBuildPolicy
+      Policies:
+        - PolicyName: CodeBuildPolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -57,13 +58,12 @@ Resources:
                   - '*'
                 Effect: Allow
               - Action:
-                - 's3:GetObject',
+                - 's3:GetObject'
                 - 's3:GetObjectVersion'
                 - 's3:PutObject'
                 Resource:
                   - '*'
                 Effect: Allow
-
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -80,7 +80,8 @@ Resources:
   CodePipelineRole:
     Type: "AWS::IAM::Role"
     Properties:
-      - PolicyName: CodePipelinePolicy
+      Policies:
+        - PolicyName: CodePipelinePolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -88,6 +89,18 @@ Resources:
                 - 'iam:PassRole'
                 Resource:
                   - 'arn:aws:logs:*:*:*'
+                Effect: Allow
+              - Action:
+                - 'github:GitPull'
+                Resource:
+                  - '*'
+                Effect: Allow
+              - Action:
+                - 's3:GetObject'
+                - 's3:GetObjectVersion'
+                - 's3:PutObject'
+                Resource:
+                  - '*'
                 Effect: Allow
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -105,21 +118,22 @@ Resources:
   CloudFormationRole:
     Type: "AWS::IAM::Role"
     Properties:
-      - PolicyName: CodePipelinePolicy
+      Policies:
+        - PolicyName: CodePipelinePolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
               - Action:
-                - 'cloudformation:CreateStack',
-                - 'cloudformation:DeleteStack',
-                - 'cloudformation:DescribeStacks',
-                - 'cloudformation:UpdateStack',
-                - 'cloudformation:CreateChangeSet',
-                - 'cloudformation:DeleteChangeSet',
-                - 'cloudformation:DescribeChangeSet',
-                - 'cloudformation:ExecuteChangeSet',
-                - 'cloudformation:SetStackPolicy',
-                - 'cloudformation:ValidateTemplate',
+                - 'cloudformation:CreateStack'
+                - 'cloudformation:DeleteStack'
+                - 'cloudformation:DescribeStacks'
+                - 'cloudformation:UpdateStack'
+                - 'cloudformation:CreateChangeSet'
+                - 'cloudformation:DeleteChangeSet'
+                - 'cloudformation:DescribeChangeSet'
+                - 'cloudformation:ExecuteChangeSet'
+                - 'cloudformation:SetStackPolicy'
+                - 'cloudformation:ValidateTemplate'
                 - 'iam:PassRole'
                 Resource:
                   - 'arn:aws:logs:*:*:*'

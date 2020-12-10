@@ -85,17 +85,7 @@ Resources:
             Version: '2012-10-17'
             Statement:
               - Action:
-                  - 'cloudformation:CreateStack',
-                  - 'cloudformation:DeleteStack',
-                  - 'cloudformation:DescribeStacks',
-                  - 'cloudformation:UpdateStack',
-                  - 'cloudformation:CreateChangeSet',
-                  - 'cloudformation:DeleteChangeSet',
-                  - 'cloudformation:DescribeChangeSet',
-                  - 'cloudformation:ExecuteChangeSet',
-                  - 'cloudformation:SetStackPolicy',
-                  - 'cloudformation:ValidateTemplate',
-                  - 'iam:PassRole'
+                - 'iam:PassRole'
                 Resource:
                   - 'arn:aws:logs:*:*:*'
                 Effect: Allow
@@ -115,6 +105,30 @@ Resources:
   CloudFormationRole:
     Type: "AWS::IAM::Role"
     Properties:
+      - PolicyName: CodePipelinePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - 'cloudformation:CreateStack',
+                - 'cloudformation:DeleteStack',
+                - 'cloudformation:DescribeStacks',
+                - 'cloudformation:UpdateStack',
+                - 'cloudformation:CreateChangeSet',
+                - 'cloudformation:DeleteChangeSet',
+                - 'cloudformation:DescribeChangeSet',
+                - 'cloudformation:ExecuteChangeSet',
+                - 'cloudformation:SetStackPolicy',
+                - 'cloudformation:ValidateTemplate',
+                - 'iam:PassRole'
+                Resource:
+                  - 'arn:aws:logs:*:*:*'
+                Effect: Allow
+              - Action:
+                - 's3:PutObject'
+                Resource:
+                  - '*'
+                Effect: Allow
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -124,8 +138,8 @@ Resources:
                 - cloudformation.amazonaws.com
             Action:
               - "sts:AssumeRole"
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AdministratorAccess
+      # ManagedPolicyArns:
+      #   - arn:aws:iam::aws:policy/AdministratorAccess
       RoleName: "cloudformation-role"
 
   CodePipeline:
